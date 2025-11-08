@@ -51,6 +51,8 @@ function connectWebSocket() {
     // IMPORTANT: marimo requires both session_id AND file parameters
     const wsUrl = `${MARIMO_WS_URL}?session_id=${state.sessionId}&file=${state.file}`;
     console.log('🔌 Connecting to:', wsUrl);
+    console.log('📁 File parameter:', state.file);
+    console.log('🆔 Session ID:', state.sessionId);
 
     updateStatus('Connecting...', 'disconnected');
 
@@ -107,6 +109,10 @@ function handleWSError(event) {
 
 function handleWSClose(event) {
     console.log('🔌 WebSocket closed');
+    console.log('   Close code:', event.code);
+    console.log('   Close reason:', event.reason || '(no reason provided)');
+    console.log('   Was clean:', event.wasClean);
+
     state.isConnected = false;
     updateStatus('Disconnected', 'disconnected');
 

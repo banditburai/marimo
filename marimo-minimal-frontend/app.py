@@ -8,16 +8,22 @@ from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 import uvicorn
 import os
+import time
 
-# HTML template for the minimal UI
-HTML_TEMPLATE = """
+# Version for cache busting
+VERSION = str(int(time.time()))
+
+async def index(request):
+    """Serve the main notebook interface"""
+    # HTML template with cache-busting version parameter
+    html = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marimo - Minimal Mode</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css?v={VERSION}">
 </head>
 <body>
     <div id="app">
@@ -37,14 +43,11 @@ HTML_TEMPLATE = """
         </div>
     </div>
 
-    <script src="/static/marimo-client.js"></script>
+    <script src="/static/marimo-client.js?v={VERSION}"></script>
 </body>
 </html>
 """
-
-async def index(request):
-    """Serve the main notebook interface"""
-    return HTMLResponse(HTML_TEMPLATE)
+    return HTMLResponse(html)
 
 async def health(request):
     """Health check endpoint"""
