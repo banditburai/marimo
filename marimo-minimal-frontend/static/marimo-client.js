@@ -233,6 +233,7 @@ async function runCell(cellId) {
         const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',  // Send cookies for authentication
             body: JSON.stringify({
                 cell_ids: [cellId],
                 codes: [cell.code]
@@ -274,6 +275,7 @@ async function runAllCells() {
         const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',  // Send cookies for authentication
             body: JSON.stringify({
                 cell_ids: cellIds,
                 codes: codes
@@ -299,7 +301,8 @@ async function interruptExecution() {
     try {
         const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/interrupt`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'  // Send cookies for authentication
         });
 
         if (!response.ok) {
@@ -362,6 +365,7 @@ async function deleteCell(cellId) {
         await fetch(`${MARIMO_BACKEND_URL}/api/kernel/delete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',  // Send cookies for authentication
             body: JSON.stringify({ cell_id: cellId })
         });
     } catch (error) {
