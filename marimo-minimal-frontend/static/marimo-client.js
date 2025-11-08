@@ -6,6 +6,7 @@
 // Configuration
 const MARIMO_BACKEND_URL = 'http://localhost:2718';
 const MARIMO_WS_URL = 'ws://localhost:2718/ws';
+const MARIMO_FILE = 'notebook.py'; // Default file name - change this to match your notebook
 
 // State
 let state = {
@@ -14,7 +15,8 @@ let state = {
     cells: {},
     cellOrder: [],
     isConnected: false,
-    isExecuting: false
+    isExecuting: false,
+    file: MARIMO_FILE
 };
 
 // Initialize on page load
@@ -46,7 +48,8 @@ function generateSessionId() {
  * Connect to marimo WebSocket
  */
 function connectWebSocket() {
-    const wsUrl = `${MARIMO_WS_URL}?session_id=${state.sessionId}`;
+    // IMPORTANT: marimo requires both session_id AND file parameters
+    const wsUrl = `${MARIMO_WS_URL}?session_id=${state.sessionId}&file=${state.file}`;
     console.log('🔌 Connecting to:', wsUrl);
 
     updateStatus('Connecting...', 'disconnected');
