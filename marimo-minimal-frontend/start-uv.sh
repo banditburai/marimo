@@ -39,6 +39,7 @@ uv run marimo edit "$NOTEBOOK_FILE" \
     --allow-origins "http://localhost:8000" \
     --allow-origins "http://127.0.0.1:8000" \
     --no-token \
+    --no-skew-protection \
     > marimo-backend.log 2>&1 &
 
 MARIMO_PID=$!
