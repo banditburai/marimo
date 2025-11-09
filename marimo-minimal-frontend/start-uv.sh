@@ -33,13 +33,13 @@ echo "   CORS: http://localhost:8000"
 echo ""
 
 # Start marimo with uv run
+# Skew protection is ENABLED (proper version checking)
 uv run marimo edit "$NOTEBOOK_FILE" \
     --port 2718 \
     --headless \
     --allow-origins "http://localhost:8000" \
     --allow-origins "http://127.0.0.1:8000" \
     --no-token \
-    --no-skew-protection \
     > marimo-backend.log 2>&1 &
 
 MARIMO_PID=$!

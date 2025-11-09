@@ -16,7 +16,8 @@ let state = {
     cellOrder: [],
     isConnected: false,
     isExecuting: false,
-    file: MARIMO_FILE
+    file: MARIMO_FILE,
+    serverToken: null  // For skew protection
 };
 
 // Initialize on page load
@@ -26,9 +27,39 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
+ * Fetch server token from marimo for skew protection
+ */
+async function fetchServerToken() {
+    try {
+        console.log('🔑 Fetching server token from marimo...');
+        const response = await fetch(`${MARIMO_BACKEND_URL}/`);
+        const html = await response.text();
+
+        // Extract serverToken from marimo's HTML
+        // Marimo embeds it like: "serverToken": "abc123..."
+        const match = html.match(/"serverToken":\s*"([^"]+)"/);
+
+        if (match && match[1]) {
+            state.serverToken = match[1];
+            console.log('✅ Got server token');
+            return true;
+        } else {
+            console.warn('⚠️  Could not extract server token from HTML');
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Error fetching server token:', error);
+        return false;
+    }
+}
+
+/**
  * Initialize connection to marimo backend
  */
-function initializeMarimo() {
+async function initializeMarimo() {
+    // Fetch server token first (for skew protection)
+    await fetchServerToken();
+
     // Generate unique session ID
     state.sessionId = generateSessionId();
     console.log('🔌 Initializing marimo session:', state.sessionId);
@@ -230,9 +261,18 @@ async function runCell(cellId) {
     updateInterruptButton();
 
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Include server token for skew protection
+        if (state.serverToken) {
+            headers['Marimo-Server-Token'] = state.serverToken;
+        }
+
         const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             credentials: 'include',  // Send cookies for authentication
             body: JSON.stringify({
                 cell_ids: [cellId],
@@ -272,9 +312,18 @@ async function runAllCells() {
     updateInterruptButton();
 
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Include server token for skew protection
+        if (state.serverToken) {
+            headers['Marimo-Server-Token'] = state.serverToken;
+        }
+
         const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             credentials: 'include',  // Send cookies for authentication
             body: JSON.stringify({
                 cell_ids: cellIds,
@@ -299,9 +348,18 @@ async function interruptExecution() {
     console.log('⏹️ Interrupting execution');
 
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Include server token for skew protection
+        if (state.serverToken) {
+            headers['Marimo-Server-Token'] = state.serverToken;
+        }
+
         const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/interrupt`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             credentials: 'include'  // Send cookies for authentication
         });
 
@@ -362,9 +420,18 @@ async function deleteCell(cellId) {
 
     // Optionally send delete to backend
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Include server token for skew protection
+        if (state.serverToken) {
+            headers['Marimo-Server-Token'] = state.serverToken;
+        }
+
         await fetch(`${MARIMO_BACKEND_URL}/api/kernel/delete`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             credentials: 'include',  // Send cookies for authentication
             body: JSON.stringify({ cell_id: cellId })
         });
