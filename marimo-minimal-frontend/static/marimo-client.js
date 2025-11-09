@@ -7,6 +7,7 @@
 const MARIMO_BACKEND_URL = 'http://localhost:2718';
 const MARIMO_WS_URL = 'ws://localhost:2718/ws';
 const MARIMO_FILE = 'notebook.py'; // Default file name - change this to match your notebook
+const MARIMO_ACCESS_TOKEN = 'dev-token-12345'; // Must match --token-password on backend
 
 // State
 let state = {
@@ -79,11 +80,12 @@ function generateSessionId() {
  * Connect to marimo WebSocket
  */
 function connectWebSocket() {
-    // IMPORTANT: marimo requires both session_id AND file parameters
-    const wsUrl = `${MARIMO_WS_URL}?session_id=${state.sessionId}&file=${state.file}`;
+    // IMPORTANT: marimo requires session_id, file, AND access_token (if auth enabled)
+    const wsUrl = `${MARIMO_WS_URL}?session_id=${state.sessionId}&file=${state.file}&access_token=${MARIMO_ACCESS_TOKEN}`;
     console.log('🔌 Connecting to:', wsUrl);
     console.log('📁 File parameter:', state.file);
     console.log('🆔 Session ID:', state.sessionId);
+    console.log('🔑 Access token:', MARIMO_ACCESS_TOKEN ? '***' + MARIMO_ACCESS_TOKEN.slice(-4) : 'none');
 
     updateStatus('Connecting...', 'disconnected');
 
