@@ -273,7 +273,7 @@ async function runCell(cellId) {
             headers['Marimo-Server-Token'] = state.serverToken;
         }
 
-        const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run`, {
+        const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run?access_token=${MARIMO_ACCESS_TOKEN}`, {
             method: 'POST',
             headers: headers,
             credentials: 'include',  // Send cookies for authentication
@@ -325,7 +325,7 @@ async function runAllCells() {
             headers['Marimo-Server-Token'] = state.serverToken;
         }
 
-        const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run`, {
+        const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/run?access_token=${MARIMO_ACCESS_TOKEN}`, {
             method: 'POST',
             headers: headers,
             credentials: 'include',  // Send cookies for authentication
@@ -362,7 +362,7 @@ async function interruptExecution() {
             headers['Marimo-Server-Token'] = state.serverToken;
         }
 
-        const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/interrupt`, {
+        const response = await fetch(`${MARIMO_BACKEND_URL}/api/kernel/interrupt?access_token=${MARIMO_ACCESS_TOKEN}`, {
             method: 'POST',
             headers: headers,
             credentials: 'include'  // Send cookies for authentication
@@ -435,7 +435,7 @@ async function deleteCell(cellId) {
             headers['Marimo-Server-Token'] = state.serverToken;
         }
 
-        await fetch(`${MARIMO_BACKEND_URL}/api/kernel/delete`, {
+        await fetch(`${MARIMO_BACKEND_URL}/api/kernel/delete?access_token=${MARIMO_ACCESS_TOKEN}`, {
             method: 'POST',
             headers: headers,
             credentials: 'include',  // Send cookies for authentication
