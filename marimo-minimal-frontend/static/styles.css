@@ -1,0 +1,450 @@
+/**
+ * Minimal Distraction-Free Marimo Frontend
+ * Clean, simple, focused design
+ */
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --accent-color: #0066cc;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+    --running-color: #17a2b8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-hover: 0 2px 8px rgba(0,0,0,0.15);
+    --radius: 4px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    box-shadow: var(--shadow);
+}
+
+header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent-color);
+    letter-spacing: 0.5px;
+}
+
+/* Status indicator */
+#status {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.status-disconnected {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.status-connected {
+    background: #d4edda;
+    color: var(--success-color);
+}
+
+.status-ready {
+    background: #d1ecf1;
+    color: var(--running-color);
+}
+
+.status-error {
+    background: #f8d7da;
+    color: var(--error-color);
+}
+
+/* Main notebook area */
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+}
+
+#cells-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Cell styles */
+.cell {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.cell:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.cell:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+/* Cell status border */
+.cell-running {
+    border-left: 4px solid var(--running-color);
+}
+
+.cell-error {
+    border-left: 4px solid var(--error-color);
+}
+
+/* Cell editor container */
+.cell-editor {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 8px;
+}
+
+/* Status indicator (dot) */
+.cell-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+    background: var(--border-color);
+}
+
+.cell-status-idle {
+    background: var(--border-color);
+}
+
+.cell-status-running {
+    background: var(--running-color);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.cell-status-error {
+    background: var(--error-color);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Code editor */
+.cell-code {
+    flex: 1;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    resize: none;
+    overflow: hidden;
+    min-height: 40px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.cell-code:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: var(--bg-primary);
+}
+
+.cell-code::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Cell controls */
+.cell-controls {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.cell:hover .cell-controls,
+.cell:focus-within .cell-controls {
+    opacity: 1;
+}
+
+.cell-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.cell-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.cell-btn-run:hover {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.cell-btn-delete:hover {
+    background: var(--error-color);
+    color: white;
+    border-color: var(--error-color);
+}
+
+/* Cell output */
+.cell-output {
+    border-top: 1px solid var(--border-color);
+    padding: 12px;
+    background: var(--bg-secondary);
+    min-height: 20px;
+}
+
+.cell-output:empty {
+    display: none;
+}
+
+.output-content {
+    font-size: 13px;
+}
+
+.output-content pre {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--text-primary);
+}
+
+.output-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+}
+
+/* Error output */
+.output-error {
+    background: #fff5f5;
+    border: 1px solid var(--error-color);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.error-title {
+    font-weight: 600;
+    color: var(--error-color);
+    margin-bottom: 8px;
+}
+
+.error-message {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 12px;
+    color: #721c24;
+    white-space: pre-wrap;
+}
+
+/* Fixed controls at bottom */
+#controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    padding: 12px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+#controls button {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#controls button:hover:not(:disabled) {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow);
+}
+
+#controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#add-cell-btn {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+#add-cell-btn:hover {
+    background: #0052a3;
+    border-color: #0052a3;
+}
+
+#interrupt-btn {
+    background: var(--error-color);
+    color: white;
+    border-color: var(--error-color);
+}
+
+#interrupt-btn:hover:not(:disabled) {
+    background: #c82333;
+    border-color: #c82333;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    main {
+        padding: 70px 12px 100px;
+    }
+
+    header {
+        padding: 10px 12px;
+    }
+
+    header h1 {
+        font-size: 16px;
+    }
+
+    #controls {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    #controls button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Print styles */
+@media print {
+    header,
+    #controls,
+    .cell-controls {
+        display: none !important;
+    }
+
+    main {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .cell {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .cell-output {
+        background: white;
+    }
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cell {
+    animation: fadeIn 0.3s ease-out;
+}
